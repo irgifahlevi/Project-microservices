@@ -14,5 +14,8 @@ namespace ProductService.Dtos
         public int Stock { get; set; }
         [Required]
         public decimal Price { get; set; }
+        [Required]
+        public string Description { get; set; }
+
     }
 }

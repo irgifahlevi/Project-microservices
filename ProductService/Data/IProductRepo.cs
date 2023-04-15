@@ -14,5 +14,6 @@ namespace ProductService.Data
         Task Create(Product product);
         Task Update(int id, Product product);
         Task Delete(int id);
+        bool SaveChanges();
     }
 }

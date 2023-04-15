@@ -23,13 +23,26 @@ namespace ProductService.Controllers
             _mapper = mapper;
         }
 
+        // Menampilkan semua produk
+        [HttpGet]
+        public async Task<IActionResult> GetAllProduct()
+        {
+            var products = await _productRepo.GetAll();
+            var productsReadDtoList = _mapper.Map<IEnumerable<ReadProductDto>>(products);
+            return Ok(productsReadDtoList);
+        }
+
         // Get by Id
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("{id}", Name = "GetProductById")]
+        public async Task<IActionResult> GetProductById(int id)
         {
             var product = await _productRepo.GetById(id);
-            var readProductDto = _mapper.Map<ReadProductDto>(product);
-            return Ok(readProductDto);
+            if (product != null)
+            {
+                var readProductDto = _mapper.Map<ReadProductDto>(product);
+                return Ok(readProductDto);
+            }
+            return NotFound();
         }
 
         // Update product
@@ -41,13 +54,28 @@ namespace ProductService.Controllers
                 var product = _mapper.Map<Product>(updateProductDto);
                 product.ProductId = id;
                 await _productRepo.Update(id, product);
+                _productRepo.SaveChanges();
                 var readProductDto = _mapper.Map<ReadProductDto>(product);
                 return Ok(readProductDto);
+
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        // Create product
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateProductDto createProductDto)
+        {
+            var productModel = _mapper.Map<Product>(createProductDto);
+            await _productRepo.Create(productModel);
+            _productRepo.SaveChanges();
+            var readProductDto = _mapper.Map<ReadProductDto>(productModel);
+
+            return CreatedAtRoute(nameof(GetProductById),
+                new { Id = readProductDto.ProductId }, readProductDto);
         }
     }
 }

@@ -15,9 +15,13 @@ namespace ProductService.Data
         {
             _context = context;
         }
-        public Task Create(Product product)
+        public async Task Create(Product product)
         {
-            throw new NotImplementedException();
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+            await _context.Products.AddAsync(product);
         }
 
         public Task Delete(int id)
@@ -25,9 +29,9 @@ namespace ProductService.Data
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Product>> GetAll()
+        public async Task<IEnumerable<Product>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.Products.ToListAsync();
         }
 
         public async Task<Product> GetById(int id)
@@ -43,6 +47,11 @@ namespace ProductService.Data
         public Task<IEnumerable<Product>> GetByName(string name)
         {
             throw new NotImplementedException();
+        }
+
+        public bool SaveChanges()
+        {
+            return (_context.SaveChanges() >= 0);
         }
 
         public async Task Update(int id, Product product)
