@@ -45,6 +45,19 @@ namespace ProductService.Controllers
             return NotFound();
         }
 
+        // Get product by name
+        [HttpGet("name/{name}", Name = "GetProductByName")]
+        public async Task<ActionResult<IEnumerable<ReadProductDto>>> GetProductByName(string name)
+        {
+            var productsByName = await _productRepo.GetByName(name);
+            if (productsByName != null)
+            {
+                var readProductDtos = _mapper.Map<IEnumerable<ReadProductDto>>(productsByName);
+                return Ok(readProductDtos);
+            }
+            return NotFound();
+        }
+
         // Update product
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateProductDto updateProductDto)

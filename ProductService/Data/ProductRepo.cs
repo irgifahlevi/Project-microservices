@@ -24,7 +24,7 @@ namespace ProductService.Data
             await _context.Products.AddAsync(product);
         }
 
-        public Task Delete(int id)
+        public Task Delete(int id, Product product)
         {
             throw new NotImplementedException();
         }
@@ -44,9 +44,14 @@ namespace ProductService.Data
             return product;
         }
 
-        public Task<IEnumerable<Product>> GetByName(string name)
+        public async Task<IEnumerable<Product>> GetByName(string name)
         {
-            throw new NotImplementedException();
+            var productsByName = await _context.Products.Where(p => p.Name.Contains(name)).ToListAsync();
+            if (productsByName == null || !productsByName.Any())
+            {
+                throw new Exception("No products found.");
+            }
+            return productsByName;
         }
 
         public bool SaveChanges()
