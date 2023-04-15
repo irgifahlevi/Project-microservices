@@ -24,7 +24,7 @@ namespace ProductService.Controllers
         }
 
         // Menampilkan semua produk
-        [HttpGet]
+        [HttpGet(Name = "GetAllProduct")]
         public async Task<IActionResult> GetAllProduct()
         {
             var products = await _productRepo.GetAll();
@@ -89,6 +89,22 @@ namespace ProductService.Controllers
 
             return CreatedAtRoute(nameof(GetProductById),
                 new { Id = readProductDto.ProductId }, readProductDto);
+        }
+
+
+        // Update product
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _productRepo.DeleteProduct(id);
+                return RedirectToAction(nameof(GetAllProduct));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

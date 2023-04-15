@@ -29,6 +29,23 @@ namespace ProductService.Data
             throw new NotImplementedException();
         }
 
+        public async Task DeleteProduct(int id)
+        {
+            try
+            {
+                var existingProduct = await GetById(id);
+                if (existingProduct != null)
+                {
+                    _context.Products.Remove(existingProduct);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting product {ex.Message}");
+            }
+        }
+
         public async Task<IEnumerable<Product>> GetAll()
         {
             return await _context.Products.ToListAsync();
@@ -68,7 +85,7 @@ namespace ProductService.Data
                 existingProduct.Description = product.Description;
                 existingProduct.Price = product.Price;
                 existingProduct.Stock = product.Stock;
-                await _context.SaveChangesAsync();
+                // await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {

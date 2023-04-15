@@ -13,7 +13,7 @@ namespace ProductService.Data
         Task<IEnumerable<Product>> GetByName(string name);
         Task Create(Product product);
         Task Update(int id, Product product);
-        Task Delete(int id, Product product);
+        Task DeleteProduct(int id);
         bool SaveChanges();
     }
 }
