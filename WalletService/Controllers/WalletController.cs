@@ -32,6 +32,7 @@ namespace WalletService.Controllers
             return Ok(walletReadDtoList);
         }
 
+        // Get wallet by id
         [HttpGet("{id}", Name = "GetWalletById")]
         public async Task<IActionResult> GetWalletById(int id)
         {
@@ -46,6 +47,23 @@ namespace WalletService.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        // Get wallet by name
+        [HttpGet("name/{name}", Name = "GetWalletByName")]
+        public async Task<ActionResult<IEnumerable<ReadWalletDto>>> GetProductByName(string name)
+        {
+            try
+            {
+                var walletByName = await _walletRepo.GetWalletByName(name);
+                var walletReadDtoList = _mapper.Map<IEnumerable<ReadWalletDto>>(walletByName);
+                return Ok(walletReadDtoList);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
 
         // Create a new wallet
         [HttpPost]

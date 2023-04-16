@@ -52,9 +52,21 @@ namespace WalletService.Data
             }
         }
 
-        public Task<IEnumerable<Wallet>> GetWalletByName(string name)
+        public async Task<IEnumerable<Wallet>> GetWalletByName(string name)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var walletByName = await _context.Wallets.Where(p => p.FullName.Contains(name)).ToListAsync();
+                if (walletByName == null || !walletByName.Any())
+                {
+                    throw new Exception($"wallet {name} not found");
+                }
+                return walletByName;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error {ex.Message}");
+            }
         }
 
         public bool SaveChanges()
