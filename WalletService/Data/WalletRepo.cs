@@ -74,9 +74,19 @@ namespace WalletService.Data
             return (_context.SaveChanges() >= 0);
         }
 
-        public Task UpdateWallet(int id, Wallet wallet)
+        public async Task UpdateWallet(int id, Wallet wallet)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var existingWallet = await GetWalletById(wallet.WalletId);
+                existingWallet.Username = wallet.Username;
+                existingWallet.FullName = wallet.FullName;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error {ex.Message}");
+            }
         }
     }
 }

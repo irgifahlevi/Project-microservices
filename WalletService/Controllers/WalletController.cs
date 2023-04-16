@@ -64,7 +64,6 @@ namespace WalletService.Controllers
             }
         }
 
-
         // Create a new wallet
         [HttpPost]
         public async Task<IActionResult> CreateWallet(CreateWalletDto createWalletDto)
@@ -77,7 +76,24 @@ namespace WalletService.Controllers
             return Ok(walletReadDto);
         }
 
-
+        // Update wallet user
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateWallet(int id, UpdateWalletDto updateWalletDto)
+        {
+            try
+            {
+                var walletModel = _mapper.Map<Wallet>(updateWalletDto);
+                walletModel.WalletId = id;
+                await _walletRepo.UpdateWallet(id, walletModel);
+                _walletRepo.SaveChanges();
+                var readWalletDto = _mapper.Map<ReadWalletDto>(walletModel);
+                return Ok(readWalletDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }
