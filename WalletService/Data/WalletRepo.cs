@@ -35,9 +35,21 @@ namespace WalletService.Data
             return await _context.Wallets.ToListAsync();
         }
 
-        public Task<Wallet> GetWalletById(int id)
+        public async Task<Wallet> GetWalletById(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var walletById = await _context.Wallets.FirstOrDefaultAsync(p => p.WalletId == id);
+                if (walletById == null)
+                {
+                    throw new Exception($"wallet id {id} not found");
+                }
+                return walletById;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error {ex.Message}");
+            }
         }
 
         public Task<IEnumerable<Wallet>> GetWalletByName(string name)
