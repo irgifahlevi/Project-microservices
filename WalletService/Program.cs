@@ -31,4 +31,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Inject data langsung
+PrepDb.PrepPopulation(app);
+
 app.Run();
