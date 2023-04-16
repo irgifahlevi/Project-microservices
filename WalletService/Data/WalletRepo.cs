@@ -16,9 +16,13 @@ namespace WalletService.Data
             _context = context;
         }
 
-        public Task CreateWallet(Wallet wallet)
+        public async Task CreateWallet(Wallet wallet)
         {
-            throw new NotImplementedException();
+            if (wallet == null)
+            {
+                throw new ArgumentNullException(nameof(wallet));
+            }
+            await _context.Wallets.AddAsync(wallet);
         }
 
         public Task DeleteWallet(int id)
@@ -43,7 +47,7 @@ namespace WalletService.Data
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            return (_context.SaveChanges() >= 0);
         }
 
         public Task UpdateWallet(int id, Wallet wallet)
