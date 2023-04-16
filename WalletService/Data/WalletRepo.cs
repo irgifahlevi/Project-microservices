@@ -2,12 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WalletService.Models;
 
 namespace WalletService.Data
 {
     public class WalletRepo : IWalletRepo
     {
+        private readonly AppDbContext _context;
+
+        public WalletRepo(AppDbContext context)
+        {
+            _context = context;
+        }
+
         public Task CreateWallet(Wallet wallet)
         {
             throw new NotImplementedException();
@@ -18,9 +26,9 @@ namespace WalletService.Data
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Wallet>> GetAllWallet()
+        public async Task<IEnumerable<Wallet>> GetAllWallet()
         {
-            throw new NotImplementedException();
+            return await _context.Wallets.ToListAsync();
         }
 
         public Task<Wallet> GetWalletById(int id)
