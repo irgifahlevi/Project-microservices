@@ -95,5 +95,24 @@ namespace WalletService.Controllers
             }
         }
 
+
+        [HttpPost("{id}/topup")]
+        public async Task<IActionResult> TopUp(int id, TopupWalletDto topupWalletDto)
+        {
+            try
+            {
+                var walletModel = _mapper.Map<Wallet>(topupWalletDto);
+                walletModel.WalletId = id;
+                await _walletRepo.TopUp(id, walletModel);
+                _walletRepo.SaveChanges();
+                var walletReadDto = _mapper.Map<ReadWalletDto>(walletModel);
+
+                return Ok("Payment topup successfully");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

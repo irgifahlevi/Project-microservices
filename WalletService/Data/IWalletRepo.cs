@@ -13,7 +13,7 @@ namespace WalletService.Data
         Task<IEnumerable<Wallet>> GetWalletByName(string name);
         Task CreateWallet(Wallet wallet);
         Task UpdateWallet(int id, Wallet wallet);
-        Task DeleteWallet(int id);
+        Task<bool> TopUp(int id, Wallet wallet);
         bool SaveChanges();
     }
 }

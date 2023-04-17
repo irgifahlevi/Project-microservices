@@ -74,6 +74,30 @@ namespace WalletService.Data
             return (_context.SaveChanges() >= 0);
         }
 
+        public async Task<bool> TopUp(int id, Wallet wallet)
+        {
+            try
+            {
+                var existingWallet = await GetWalletById(wallet.WalletId);
+
+                if (existingWallet == null)
+                {
+                    throw new Exception("Wallet id not found");
+                }
+
+                decimal topupWallet = existingWallet.Cash + wallet.Cash;
+                existingWallet.Cash = topupWallet;
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error {ex.Message}");
+            }
+        }
+
         public async Task UpdateWallet(int id, Wallet wallet)
         {
             try
