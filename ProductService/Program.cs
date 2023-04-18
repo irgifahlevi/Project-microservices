@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ProductService.AsyncDataService;
 using ProductService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddScoped<IProductRepo, ProductRepo>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<IMessageClient, MessageClient>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 

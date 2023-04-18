@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using ProductService.AsyncDataService;
 using ProductService.Data;
 using ProductService.Dtos;
 using ProductService.Models;
@@ -16,11 +17,14 @@ namespace ProductService.Controllers
     {
         private readonly IProductRepo _productRepo;
         private readonly IMapper _mapper;
+        private readonly IMessageClient _messageClient;
 
-        public ProductController(IProductRepo productRepo, IMapper mapper)
+        public ProductController(IProductRepo productRepo, IMapper mapper,
+        IMessageClient messageClient)
         {
             _productRepo = productRepo;
             _mapper = mapper;
+            _messageClient = messageClient;
         }
 
         // Menampilkan semua produk
@@ -86,6 +90,18 @@ namespace ProductService.Controllers
             await _productRepo.Create(productModel);
             _productRepo.SaveChanges();
             var readProductDto = _mapper.Map<ReadProductDto>(productModel);
+
+            try
+            {
+                //send async message    
+                var productPublishedDto = _mapper.Map<ProductPublishDto>(readProductDto);
+                productPublishedDto.Event = "Product_NewPublished";
+                _messageClient.PublishNewProduct(productPublishedDto);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
+            }
 
             return CreatedAtRoute(nameof(GetProductById),
                 new { Id = readProductDto.ProductId }, readProductDto);
