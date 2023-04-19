@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WalletService.AsyncDataService;
 using WalletService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddScoped<IWalletRepo, WalletRepo>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<IMessageClient, MessageClient>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();

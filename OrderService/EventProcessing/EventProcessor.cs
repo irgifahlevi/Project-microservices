@@ -87,30 +87,32 @@ namespace OrderService.EventProcessing
             }
         }
 
-        private void addWallet(string productPublishedMessage)
+        private void addWallet(string walletPublishedMessage)
         {
             using (var scope = _scopeFactory.CreateScope())
             {
-                // var repo = scope.ServiceProvider.GetRequiredService<IProductOrderRepo>();
-                // var productPublishedDto = JsonSerializer.Deserialize<ProductPublishedDto>(productPublishedMessage);
-                // try
-                // {
-                //     var product = _mapper.Map<Product>(productPublishedDto);
-                //     if (!repo.ExternalProductExists(product.ProductId))
-                //     {
-                //         repo.CreateProduct(product);
-                //         repo.SaveChanges();
-                //         Console.WriteLine($"--> Product {product.Name} added");
-                //     }
-                //     else
-                //     {
-                //         Console.WriteLine("--> Product already exists");
-                //     }
-                // }
-                // catch (Exception ex)
-                // {
-                //     Console.WriteLine($"--> Could not add Product to DB: {ex.Message}");
-                // }
+                var repo = scope.ServiceProvider.GetRequiredService<IProductOrderRepo>();
+                var walletPublishedDto = JsonSerializer.Deserialize<WalletPublishDto>(walletPublishedMessage);
+                try
+                {
+                    var wallet = _mapper.Map<Wallet>(walletPublishedDto);
+                    if (!repo.ExternalWalletExists(wallet.WalletId))
+                    {
+                        // repo.CreateProduct(product);
+                        repo.CreateWallet(wallet);
+                        repo.SaveChanges();
+                        Console.WriteLine($"--> Wallet {wallet.Username} added");
+                    }
+                    else
+                    {
+                        // Console.WriteLine("--> Product already exists");
+                        repo.AddCash(wallet.WalletId, walletPublishedDto.Cash);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"--> Could not add Product to DB: {ex.Message}");
+                }
             }
         }
 
@@ -118,7 +120,25 @@ namespace OrderService.EventProcessing
         {
             using (var scope = _scopeFactory.CreateScope())
             {
-
+                var repo = scope.ServiceProvider.GetRequiredService<IProductOrderRepo>();
+                var walletPublishedDto = JsonSerializer.Deserialize<TopupWalletPublishDto>(topupWalletMessage);
+                try
+                {
+                    var wallet = _mapper.Map<Wallet>(walletPublishedDto);
+                    if (!repo.WalletExists(wallet.WalletId))
+                    {
+                        Console.WriteLine("--> Wallet doesn't exist in database");
+                    }
+                    else
+                    {
+                        repo.TopupCash(wallet.WalletId, walletPublishedDto.Cash);
+                        Console.WriteLine("--> Topup cash added to wallet order");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"--> Could not add Product to DB: {ex.Message}");
+                }
             }
         }
     }

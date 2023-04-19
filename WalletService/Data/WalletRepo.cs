@@ -69,6 +69,11 @@ namespace WalletService.Data
             }
         }
 
+        public Task<Wallet> Order(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);

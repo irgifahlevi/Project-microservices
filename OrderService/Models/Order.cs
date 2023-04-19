@@ -12,8 +12,11 @@ namespace OrderService.Models
         public int OrderId { get; set; }
         public int ProductId { get; set; }
         public int Qty { get; set; }
-        public decimal Price { get; set; }
-        public DateOnly OrderDate { get; set; }
-        public string Username { get; set; }
+        public DateTime OrderDate { get; set; }
+        public int WalletId { get; set; }
+
+
+        public Product Product { get; set; }
+        public Wallet Wallet { get; set; }
     }
 }

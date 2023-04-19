@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WalletService.Dtos
+namespace OrderService.Dtos
 {
-    public class TopupWalletPublishDto
+    public class ReadWalletDto
     {
         public int WalletId { get; set; }
+        public string Username { get; set; }
         public decimal Cash { get; set; }
-        public string Event { get; set; } = string.Empty;
     }
 }

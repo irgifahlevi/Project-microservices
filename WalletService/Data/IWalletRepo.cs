@@ -14,6 +14,7 @@ namespace WalletService.Data
         Task CreateWallet(Wallet wallet);
         Task UpdateWallet(int id, Wallet wallet);
         Task<bool> TopUp(int id, Wallet wallet);
+        Task<Wallet> Order(int id);
         bool SaveChanges();
     }
 }

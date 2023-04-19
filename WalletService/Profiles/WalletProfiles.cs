@@ -16,6 +16,8 @@ namespace WalletService.Profiles
             CreateMap<CreateWalletDto, Wallet>();
             CreateMap<UpdateWalletDto, Wallet>();
             CreateMap<TopupWalletDto, Wallet>();
+            CreateMap<ReadWalletDto, WalletPublishDto>();
+            CreateMap<ReadWalletDto, TopupWalletPublishDto>();
         }
     }
 }

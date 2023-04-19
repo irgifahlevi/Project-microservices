@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using WalletService.AsyncDataService;
 using WalletService.Data;
 using WalletService.Dtos;
 using WalletService.Models;
@@ -16,11 +17,14 @@ namespace WalletService.Controllers
     {
         private readonly IWalletRepo _walletRepo;
         private readonly IMapper _mapper;
+        private readonly IMessageClient _messageClient;
 
-        public WalletController(IWalletRepo walletRepo, IMapper mapper)
+        public WalletController(IWalletRepo walletRepo, IMapper mapper,
+        IMessageClient messageClient)
         {
             _walletRepo = walletRepo;
             _mapper = mapper;
+            _messageClient = messageClient;
         }
 
         // Menampilkan semua wallet
@@ -104,15 +108,40 @@ namespace WalletService.Controllers
                 var walletModel = _mapper.Map<Wallet>(topupWalletDto);
                 walletModel.WalletId = id;
                 await _walletRepo.TopUp(id, walletModel);
-                _walletRepo.SaveChanges();
                 var walletReadDto = _mapper.Map<ReadWalletDto>(walletModel);
 
-                return Ok("Payment topup successfully");
+                var topupWalletPublishDto = _mapper.Map<TopupWalletPublishDto>(walletReadDto);
+                topupWalletPublishDto.Event = "TopupWallet_NewPublished";
+                _messageClient.PublishTopupWallet(topupWalletPublishDto);
+
+                return Ok("Topup cash successfully");
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
                 return NotFound(ex.Message);
             }
+        }
+
+        // Order 
+        [HttpPost("{id}/order")]
+        public async Task<IActionResult> Order(int id)
+        {
+            var wallet = await _walletRepo.GetWalletById(id);
+            var walletReadDtoList = _mapper.Map<ReadWalletDto>(wallet);
+            try
+            {
+                var walletPublidhDto = _mapper.Map<WalletPublishDto>(walletReadDtoList);
+                walletPublidhDto.Event = "Wallet_NewPublished";
+                _messageClient.PublishNewWallet(walletPublidhDto);
+                // return Ok(walletReadDtoList);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
+                return NotFound(ex.Message);
+            }
+            return Ok("Order successfully");
         }
     }
 }

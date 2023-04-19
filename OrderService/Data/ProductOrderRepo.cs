@@ -19,34 +19,14 @@ namespace OrderService.Data
             _client = client;
         }
 
-
-
-        // public async Task CreateProduct()
-        // {
-        //     var products = await _client.GetAllProducts();
-        //     foreach (var item in products)
-        //     {
-        //         _context.Add(new Product
-        //         {
-        //             ProductId = item.ProductId,
-        //             Name = item.Name,
-        //             Price = item.Price,
-        //             Stock = item.Stock
-        //         });
-        //     }
-        //     try
-        //     {
-        //         await _context.SaveChangesAsync();
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         Console.WriteLine($"Could not save changes to the database: {ex.Message}");
-        //     }
-        // }
-
         public bool ExternalProductExists(int externalProductId)
         {
             return _context.Products.Any(p => p.ProductId == externalProductId);
+        }
+
+        public bool ExternalWalletExists(int externalWalletId)
+        {
+            return _context.Wallets.Any(w => w.WalletId == externalWalletId);
         }
 
         public async Task<IEnumerable<Product>> GetAllProduct()
@@ -72,6 +52,49 @@ namespace OrderService.Data
                 throw new ArgumentNullException(nameof(product));
             }
             await _context.Products.AddAsync(product);
+        }
+
+        public async Task CreateWallet(Wallet wallet)
+        {
+            if (wallet == null)
+            {
+                throw new ArgumentNullException(nameof(wallet));
+            }
+            await _context.Wallets.AddAsync(wallet);
+        }
+
+        public void AddCash(int walletId, decimal cash)
+        {
+            var wallet = _context.Wallets.FirstOrDefault(w => w.WalletId == walletId);
+            if (wallet != null)
+            {
+                wallet.Cash += cash;
+                _context.SaveChanges();
+            }
+        }
+
+        public async Task<IEnumerable<Wallet>> GetAllWallet()
+        {
+            return await _context.Wallets.ToListAsync();
+        }
+
+        public void TopupCash(int walletId, decimal cash)
+        {
+            var wallet = _context.Wallets.FirstOrDefault(w => w.WalletId == walletId);
+            if (wallet != null)
+            {
+                wallet.Cash += cash;
+                _context.SaveChanges();
+            }
+            else
+            {
+                throw new ArgumentException($"Wallet with Id '{walletId}' does not exist");
+            }
+        }
+
+        public bool WalletExists(int walletId)
+        {
+            return _context.Wallets.Any(w => w.WalletId == walletId);
         }
     }
 }

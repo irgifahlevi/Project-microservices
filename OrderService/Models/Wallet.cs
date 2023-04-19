@@ -9,8 +9,9 @@ namespace OrderService.Models
     public class Wallet
     {
         [Key]
-        public int Id { get; set; }
+        public int WalletId { get; set; }
         public string Username { get; set; }
         public decimal Cash { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

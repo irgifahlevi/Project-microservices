@@ -24,24 +24,10 @@ namespace ProductService.Data
                 context.Products.AddRange(
                 new Product()
                 {
-                    Name = "Dotnet Core",
-                    Description = "Microsoft",
-                    Price = 2000,
+                    Name = "Sabun",
+                    Description = "Sabun cuci piring",
+                    Price = 1000,
                     Stock = 5
-                },
-                new Product()
-                {
-                    Name = "SQL Server Express",
-                    Description = "Microsoft",
-                    Price = 2000,
-                    Stock = 5
-                },
-                new Product()
-                {
-                    Name = "Kubernetes",
-                    Description = "Cloud Native Computing Foundation",
-                    Price = 2000,
-                    Stock = 4
                 });
                 context.SaveChanges();
             }

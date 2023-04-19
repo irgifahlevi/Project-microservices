@@ -74,10 +74,16 @@ namespace WalletService.AsyncDataService
         public void PublishTopupWallet(TopupWalletPublishDto topupWalletPublishDto)
         {
             var message = JsonSerializer.Serialize(topupWalletPublishDto);
-
-
-
-            SendMessage(message, TriggerTopUpWalletExchangeName);
+            if (_connection.IsOpen)
+            {
+                Console.WriteLine("--> RabbitMQ connection is open, sending message...");
+                SendMessage(message, TriggerTopUpWalletExchangeName);
+                Console.WriteLine($"{message}");
+            }
+            else
+            {
+                Console.WriteLine("--> RabbitMQ connection is closed, not sending...");
+            }
         }
 
         // private void SendMessage(string message)

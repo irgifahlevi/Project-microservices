@@ -15,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMe
 // untuk memanggil dan menyingkronkan data
 builder.Services.AddHttpClient<IProductDataClient, HttpProductDataClient>();
 builder.Services.AddScoped<IProductOrderRepo, ProductOrderRepo>();
+builder.Services.AddScoped<IOrderRepo, OrderRepo>();
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -14,6 +14,15 @@ namespace OrderService.Profiles
         {
             CreateMap<Product, ProductReadDto>();
             CreateMap<ProductPublishedDto, Product>();
+
+            // Untuk wallet
+            CreateMap<Wallet, ReadWalletDto>();
+            CreateMap<WalletPublishDto, Wallet>();
+            CreateMap<TopupWalletPublishDto, Wallet>();
+
+            // Untuk order
+            CreateMap<CreateOrderDto, Order>();
+            CreateMap<Order, OrderReadDto>();
         }
     }
 }
